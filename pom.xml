@@ -5,8 +5,8 @@
   <artifactId>color-service</artifactId>
   <version>2.2.0</version>
   <scm>
-    <connection>scm:git:https://github.com/openshift-pipeline-workshop/color-service.git</connection>
-    <url>https://github.com/openshift-pipeline-workshop/color-service.git</url>
+    <connection>scm:git:ssh://github.com/jritter/color-service.git</connection>
+    <url>https://github.com/jritter/color-service.git</url>
     <tag>color-service-2.2.0</tag>
   </scm>
   <properties>
