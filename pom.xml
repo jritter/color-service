@@ -5,7 +5,7 @@
   <artifactId>color-service</artifactId>
   <version>2.3.0-SNAPSHOT</version>
   <scm>
-    <developerConnection>scm:git:ssh://github.com:jritter/color-service.git</developerConnection>
+    <developerConnection>scm:git:ssh://git@github.com/jritter/color-service.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <properties>
