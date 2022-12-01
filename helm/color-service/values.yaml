@@ -8,9 +8,9 @@ replicaCount: 3
 
 image:
   repository: quay.io/jritter/color-service
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "2.1.0"
+  tag: "2.3.0"
 
 imagePullSecrets: []
 nameOverride: ""
