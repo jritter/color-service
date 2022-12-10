@@ -1,0 +1,24 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: prometheus
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/name: ""
+    app.kubernetes.io/part-of: prometheus
+    app.openshift.io/runtime: ""
+    app.openshift.io/runtime-version: latest
+  name: prometheus
+spec:
+  port:
+    targetPort: 9090-tcp
+  to:
+    kind: Service
+    name: prometheus
+    weight: 100
+  wildcardPolicy: None
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+

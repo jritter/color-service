@@ -122,8 +122,10 @@ This chapter covers the deployment of the color service using [Knative](https://
 #### Deploy color-service using Knative
 
 ```bash
-kn service create color-service --image quay.io/jritter/color-service --request cpu=100m,memory=256Mi --limit cpu=200m,memory=512Mi -l app.openshift.io/runtime=quarkus -a app.openshift.io/vcs-ref=refs/heads/develop -a app.openshift.io/vcs-uri=https://github.com/jritter/color-service -a prometheus.io/scrape=true -a prometheus.io/port=8080 -a autoscaling.knative.dev/target=20 -a autoscaling.knative.dev/metric=rps
+kn service create color-service --image quay.io/jritter/color-service:2.3.0 --request cpu=100m,memory=256Mi --limit cpu=200m,memory=512Mi -l app.openshift.io/runtime=quarkus -a app.openshift.io/vcs-ref=refs/heads/develop -a app.openshift.io/vcs-uri=https://github.com/jritter/color-service -a prometheus.io/scrape=true -a prometheus.io/path=/q/metrics -a prometheus.io/port=8080 -a autoscaling.knative.dev/target=20 -a autoscaling.knative.dev/metric=rps
 ```
+
+Note how this configuration configures the resources, the Prometheus scrape parameters and the autoscaler.
 
 ## Change the color using Knative
 
@@ -137,6 +139,12 @@ Possible colors are:
 * green
 * blue
 * yellow
+
+## Exploring the autoscaler
+
+```bash
+siege -c 10 <url>
+```
 
 ## Delete color-service using Knative
 
