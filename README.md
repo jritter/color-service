@@ -112,7 +112,7 @@ Possible colors are:
 #### Update the number of replicas of the color service deployment
 
 ```bash
-helm upgrade my-color-service helm/color-service --set replicas=1
+helm upgrade my-color-service helm/color-service --set replicaCount=1
 ```
 
 ## Delete color-service using Helm
