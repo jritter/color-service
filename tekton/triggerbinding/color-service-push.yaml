@@ -1,0 +1,16 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: color-service-push
+spec:
+  params:
+  - name: GIT_REPO_URL
+    value: $(body.repository.url)
+  - name: GIT_REPO_NAME
+    value: $(body.repository.name)
+  - name: GIT_REPO_FULL_NAME
+    value: $(body.repository.full_name)
+  - name: GIT_REVISION
+    value: $(body.head_commit.id)
+  - name: GIT_REF
+    value: $(body.ref)

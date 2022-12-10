@@ -1,0 +1,37 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: color-service-run-
+spec:
+  params:
+  - name: context-dir
+    value: .
+  - name: SERVICE_NAME
+    value: color-service
+  - name: GIT_REPO_URL
+    value: https://github.com/jritter/color-service.git
+  - name: GIT_REPO_FULL_NAME
+    value: openshift-pipeline-workshop/color-service
+  - name: GIT_REVISION
+    value: develop
+  - name: GIT_REF
+    value: refs/heads/develop
+  pipelineRef:
+    name: color-service
+  serviceAccountName: pipeline
+  timeout: 1h0m0s
+  workspaces:
+  - name: source
+    volumeClaimTemplate:
+      metadata:
+        creationTimestamp: null
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+  - name: maven-repo
+    persistentVolumeClaim:
+      claimName: maven-repo
