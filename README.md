@@ -109,6 +109,12 @@ Possible colors are:
 * blue
 * yellow
 
+#### Update the number of replicas of the color service deployment
+
+```bash
+helm upgrade my-color-service helm/color-service --set replicas=1
+```
+
 ## Delete color-service using Helm
 
 ```bash
