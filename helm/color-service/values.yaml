@@ -16,7 +16,10 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-podAnnotations: {}
+podAnnotations:
+  prometheus.io/path: /q/metrics
+  prometheus.io/port: "8080"
+  prometheus.io/scrape: "true"
 
 serviceAccount:
   # Specifies whether a service account should be created
