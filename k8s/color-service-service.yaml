@@ -8,7 +8,6 @@ metadata:
     app.kubernetes.io/name: color-service
     app.kubernetes.io/part-of: color-service
   name: color-service
-  namespace: juergritter1-dev
 spec:
   ports:
   - name: 8080-tcp
