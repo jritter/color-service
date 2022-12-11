@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: color-service
+    app.kubernetes.io/component: color-service
+    app.kubernetes.io/instance: color-service
+    app.kubernetes.io/name: color-service
+    app.kubernetes.io/part-of: color-service
+  name: color-service
+spec:
+  selector:
+    matchLabels:
+      app: color-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: color-service
+        deployment: color-service
+      annotations:
+        prometheus.io/path: /q/metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+    spec:
+      containers:
+      - image: "quay.io/jritter/color-service:2.3.0"
+        imagePullPolicy: IfNotPresent
+        name: color-service
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        env:
+        - name: COLOR_SERVICE_COLOR
+          value: green
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 3
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+
