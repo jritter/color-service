@@ -115,7 +115,7 @@ Possible colors are:
 helm upgrade my-color-service helm/color-service --set replicaCount=1
 ```
 
-## Delete color-service using Helm
+#### Delete color-service using Helm
 
 ```bash
 helm uninstall my-color-service
@@ -127,13 +127,15 @@ This chapter covers the deployment of the color service using [Knative](https://
 
 #### Deploy color-service using Knative
 
+This is one option to deploy a service using the `kn` command line client. It correctly configures the resource configuration, the labels, the annotations for Prometheus scraping, and it also configures the color by setting the environment variable COLOR_SERVICE_COLOR to blue.
+
 ```bash
-kn service create color-service --image quay.io/jritter/color-service:2.3.0 --request cpu=100m,memory=256Mi --limit cpu=200m,memory=512Mi -l app.openshift.io/runtime=quarkus -a app.openshift.io/vcs-ref=refs/heads/develop -a app.openshift.io/vcs-uri=https://github.com/jritter/color-service -a prometheus.io/scrape=true -a prometheus.io/path=/q/metrics -a prometheus.io/port=8080 -a autoscaling.knative.dev/target=20 -a autoscaling.knative.dev/metric=rps
+kn service create color-service --image quay.io/jritter/color-service:2.3.0 --request cpu=100m,memory=256Mi --limit cpu=200m,memory=512Mi -l app.openshift.io/runtime=quarkus -a app.openshift.io/vcs-ref=refs/heads/develop -a app.openshift.io/vcs-uri=https://github.com/jritter/color-service -a prometheus.io/scrape=true -a prometheus.io/path=/q/metrics -a prometheus.io/port=8080 -a autoscaling.knative.dev/target=20 -a autoscaling.knative.dev/metric=rps -e COLOR_SERVICE_COLOR=yellow
 ```
 
 Note how this configuration configures the resources, the Prometheus scrape parameters and the autoscaler.
 
-## Change the color using Knative
+#### Change the color using Knative
 
 ```bash
 kn service update color-service -e COLOR_SERVICE_COLOR=blue
@@ -146,13 +148,83 @@ Possible colors are:
 * blue
 * yellow
 
-## Exploring the autoscaler
+#### Exploring blue green Deployments
+
+Blue green deployments are a way to try out a new deployment by gradually shifting traffic from an old to a new deployment.
+
+##### Tag deployment and keep traffic on it
+
+```bash
+$ kn revision list -s color-service
+NAME                  SERVICE         TRAFFIC   TAGS   GENERATION   AGE    CONDITIONS   READY   REASON
+color-service-00002   color-service   100%             2            74s    4 OK / 4     True    
+color-service-00001   color-service                    1            106s   4 OK / 4     True    
+```
+
+Find the name of the revision you want to keep traffic on. We'll continue with color-service-00002 in this example, but this might be different in your environment. Now we are ready to tag this revision. We'll use this tag later to keep traffic on it.
+
+```bash
+kn service update color-service --tag color-service-00002=blue
+```
+
+##### Deploy a green service
+
+```bash
+kn service update color-service -e COLOR_SERVICE_COLOR=green --traffic=blue=100
+```
+
+Note that the URL still serves the blue revision. This can be verified by running the following command:
+
+```bash
+$ kn revision list
+NAME                  SERVICE         TRAFFIC   TAGS   GENERATION   AGE     CONDITIONS   READY   REASON
+color-service-00003   color-service                    3            31s     4 OK / 4     True    
+color-service-00002   color-service   100%      blue   2            2m26s   4 OK / 4     True    
+color-service-00001   color-service                    1            2m58s   3 OK / 4     True    
+```
+
+Note that the revision name of the newly deployed service is `color-service-00003`
+
+##### Tag the green service and test it
+
+Now we are ready to tag the green service and test it.
+
+```bash
+kn service update color-service --tag color-service-00003=green
+```
+
+Even though we don't shift any traffic to that revision yet, we can test it by navigating to the URL, and prepending `green-` to the hostname in the URL.
+
+##### Shifting load to the green deployment
+
+Now we can try slowly to shift traffic to the green deployment.
+
+```bash
+kn service update color-service --traffic=blue=80,green=20
+```
+
+##### Shift all the load to the green deployment
+
+The testing seems to be successful, so let's activate it for good:
+
+```bash
+kn service update color-service --traffic=@latest=100
+```
+
+##### Untag the Revisions
+
+```bash
+kn service update color-service --untag=blue,green
+```
+
+
+#### Exploring the autoscaler
 
 ```bash
 siege -c 10 <url>
 ```
 
-## Delete color-service using Knative
+#### Delete color-service using Knative
 
 ```bash
 kn service delete color-service
