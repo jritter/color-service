@@ -59,7 +59,7 @@ java -jar target/quarkus-app/quarkus-run.jar
 
 ### Creating a native executable
 
-You can create a native executable using: 
+You can create a native executable using
 
 ```bash
 ./mvnw package -Pnative
@@ -78,6 +78,13 @@ You can then execute your native executable using the following command:
 ```
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/building-native-image.
+
+### Releasing a new version
+
+```bash
+./mvnw release:prepare
+./mvnw release:perform -Darguments="-Dmaven.deploy.skip=true"
+```
 
 ## Build Container Image
 
