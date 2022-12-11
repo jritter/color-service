@@ -2,12 +2,20 @@
 
 This project is a sample project for [Quarkus](https://quarkus.io/), [Kubernetes](https://kubernetes.io/), [OpenShift](https://www.openshift.com/), [Helm](https://helm.sh), [Tekton](https://tekton.dev/) and [Knative](https://knative.dev/).
 
+![Color Service](doc/img/color_service_green.png "Color Service")
+
+It is based on [Quarkus](https://quarkus.io/). It exposes a web interface as seen above, which runs some Simple JavaScript code that calls the /color and the /version webservice. The color service just returns a color as a word and as hex code. This color can be changed using an environment variable (COLOR_SERVICE_COLOR), or using a Java property called color-service.color. The UI then changes it's color according to the color that the service returns.
+
+It also exposes some metrics at `/q/metrics` which can be ingested by [Prometheus](https://prometheus.io).
+
+This can be useful to demonstrate cloud native mechanisms, such as [blue-green deployments](https://developers.redhat.com/blog/2022/10/07/coming-terms-bluegreen-deployment), configuring services using environment variables, observability, etc.
+
 ## Prerequisites
 
 In order to run this example, you'll need:
 
 * An installation of Git to clone this repository
-* A working installation of a JVM
+* A working installation of a JVM >=11
 * The Client binaries for
   * OpenShift (oc)
   * KNative
